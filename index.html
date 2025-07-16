@@ -26,9 +26,16 @@
                 <label for="pages-to-generate">Número de páginas:</label>
                 <input type="number" id="pages-to-generate" value="25" min="1" max="1000">
                 
-                <div class="toggle-container">
-                    <input type="checkbox" id="random-layout-toggle">
-                    <label for="random-layout-toggle">Ativar Layout Aleatório</label>
+                <div class="layout-options">
+                    <strong>Layout:</strong>
+                    <input type="radio" id="mode-grid" name="layout-mode" value="grid" checked>
+                    <label for="mode-grid">Organizado</label>
+                    
+                    <input type="radio" id="mode-random" name="layout-mode" value="random">
+                    <label for="mode-random">Aleatório</label>
+                    
+                    <input type="radio" id="mode-chaos" name="layout-mode" value="chaos">
+                    <label for="mode-chaos">Modo Caos</label>
                 </div>
 
                 <button id="generate-pdf-btn" class="export-btn btn-danger">Gerar Arquivos em Lote</button>
@@ -39,7 +46,6 @@
                     <div id="progress-bar" style="width: 0%;"></div>
                 </div>
             </div>
-            <!-- NOVA ÁREA PARA EXIBIR OS LINKS DE DOWNLOAD -->
             <div id="batch-results-area" style="display: none;">
                 <h3>Arquivos Prontos para Download:</h3>
                 <ul id="batch-results-list"></ul>
