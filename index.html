@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador e Gerador em Lote</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="setup-screen">
+        <h1>Escolha a Imagem</h1>
+        <p>Use a imagem padrão ou envie um arquivo PNG do seu computador.</p>
+        <div class="setup-buttons">
+            <button id="use-default-btn" class="export-btn btn-blue">Usar Imagem Padrão</button>
+            <button id="upload-trigger-btn" class="export-btn btn-green">Enviar Minha Imagem</button>
+        </div>
+        <input type="file" id="image-upload-input" accept="image/png" style="display: none;">
+    </div>
+
+    <div id="main-app-wrapper" style="display: none;">
+        <div id="automation-section">
+            <div class="automation-controls">
+                <label for="pages-to-generate">Número de páginas:</label>
+                <input type="number" id="pages-to-generate" value="3" min="1" max="500">
+                
+                <div class="toggle-container">
+                    <input type="checkbox" id="random-layout-toggle">
+                    <label for="random-layout-toggle">Ativar Modo Aleatório</label>
+                </div>
+
+                <button id="generate-pdf-btn" class="export-btn btn-danger">Gerar PDF em Lote</button>
+            </div>
+            <div id="progress-indicator" style="display: none;">
+                <p id="progress-text">Gerando páginas...</p>
+                <div class="progress-bar-container">
+                    <div id="progress-bar" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="export-container">
+            <button id="export-with-numbers-btn" class="export-btn btn-green">Exportar Página Atual (c/ Números)</button>
+            <button id="export-without-numbers-btn" class="export-btn btn-blue">Exportar Página Atual (s/ Números)</button>
+        </div>
+
+        <div class="container" id="capture-area">
+            <div class="split left">
+                <div class="input-container"><label>Esquerda:</label><input type="number" id="left-input" value="6"></div>
+                <div id="left-images" class="image-area"></div>
+            </div>
+            <div class="split right">
+                <div class="input-container"><label>Direita:</label><input type="number" id="right-input" value="9"></div>
+                <div id="right-images" class="image-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

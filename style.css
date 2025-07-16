@@ -1,0 +1,219 @@
+/* Reset básico e estilos do corpo da página */
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* --- ESTILOS DA TELA DE SELEÇÃO INICIAL --- */
+#setup-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    padding: 20px;
+    text-align: center;
+}
+
+#setup-screen h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+#setup-screen p {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 500px;
+    margin-bottom: 30px;
+}
+
+.setup-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+/* --- ESTILOS DA APLICAÇÃO PRINCIPAL --- */
+.container {
+    display: flex;
+    width: 100%;
+    /* Altura ajustada para caber os painéis de controle acima */
+    height: calc(100vh - 200px); 
+}
+
+.split {
+    width: 50%;
+    height: 100%;
+    padding: 20px;
+    overflow: hidden; 
+    position: relative;
+    border: 1px solid #ccc;
+}
+
+.left {
+    border-right: 2px solid #555;
+}
+
+.input-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+input[type="number"] {
+    padding: 8px;
+    width: 80px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Área onde as imagens serão exibidas - MUDANÇA CRÍTICA */
+.image-area {
+    /* As propriedades de flexbox foram removidas daqui */
+    position: relative; /* ESSENCIAL para o posicionamento absoluto das imagens */
+    height: calc(100% - 60px); 
+    overflow: auto; /* Usar auto para rolagem se necessário */
+}
+
+/* Estilo para as imagens geradas - MUDANÇA CRÍTICA */
+.image-area img {
+    position: absolute; /* Cada imagem será posicionada individualmente pelo JavaScript */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; 
+    transition: all 0.3s ease; /* Animação suave para tamanho e posição */
+}
+
+
+/* --- ESTILOS DOS BOTÕES (REUTILIZÁVEIS) --- */
+
+.export-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; 
+    padding: 10px 0; 
+    background-color: #f8f9fa; 
+}
+
+.export-btn {
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    padding: 12px 25px; 
+    font-size: 16px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
+    transition: all 0.2s ease-in-out; 
+}
+
+.export-btn:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
+    transform: translateY(-2px); 
+}
+
+.export-btn:active {
+    transform: translateY(0); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.btn-green {
+    background-color: #28a745;
+}
+.btn-green:hover {
+    background-color: #218838;
+}
+
+.btn-blue {
+    background-color: #007bff;
+}
+.btn-blue:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* --- ESTILOS DA SEÇÃO DE AUTOMAÇÃO --- */
+#automation-section {
+    background-color: #fff;
+    padding: 5px;
+    text-align: center;
+}
+
+#automation-section h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.automation-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+#automation-section input[type="number"] {
+    width: 100px;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #7b00ac;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+.toggle-container label {
+    font-weight: bold;
+    color: #ffffff;
+    cursor: pointer;
+    margin-right: 0;
+}
+
+#random-layout-toggle {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
+#progress-indicator {
+    margin-top: 15px;
+}
+
+.progress-bar-container {
+    width: 80%;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    margin: 10px auto;
+    overflow: hidden;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 20px;
+    background-color: #28a745;
+    transition: width 0.3s ease-in-out;
+}
