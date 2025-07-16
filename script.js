@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progress-text');
     const progressBar = document.getElementById('progress-bar');
     const randomLayoutToggle = document.getElementById('random-layout-toggle');
+    const batchResultsArea = document.getElementById('batch-results-area');
+    const batchResultsList = document.getElementById('batch-results-list');
 
     // --- LÓGICA DA TELA DE CONFIGURAÇÃO ---
     function startApp() {
@@ -49,8 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA DA APLICAÇÃO PRINCIPAL ---
     
     /**
-     * Função de plotagem de imagens reescrita para suportar
-     * tanto o layout em grade quanto o layout aleatório (sem sobreposição).
+     * Função de plotagem de imagens com a correção para o corte de bordas.
      */
     function plotImages(count, container) {
         container.innerHTML = '';
@@ -88,16 +89,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isRandom) {
                 const maxOffsetX = cellWidth - imageSize;
                 const maxOffsetY = cellHeight - imageSize;
-                const randomOffsetX = Math.random() * maxOffsetX;
-                const randomOffsetY = Math.random() * maxOffsetY;
-                finalLeft = baseLeft + randomOffsetX;
-                finalTop = baseTop + randomOffsetY;
+                finalLeft = baseLeft + (Math.random() * maxOffsetX);
+                finalTop = baseTop + (Math.random() * maxOffsetY);
             } else {
-                const offsetX = (cellWidth - imageSize) / 2;
-                const offsetY = (cellHeight - imageSize) / 2;
-                finalLeft = baseLeft + offsetX;
-                finalTop = baseTop + offsetY;
+                finalLeft = baseLeft + (cellWidth - imageSize) / 2;
+                finalTop = baseTop + (cellHeight - imageSize) / 2;
             }
+
+            // =================================================================
+            // INÍCIO DA CORREÇÃO: Trava de segurança para as bordas
+            // =================================================================
+            finalLeft = Math.max(0, finalLeft); // Garante que não saia pela esquerda
+            finalTop = Math.max(0, finalTop);   // Garante que não saia por cima
+            finalLeft = Math.min(finalLeft, containerWidth - imageSize);  // Garante que não saia pela direita
+            finalTop = Math.min(finalTop, containerHeight - imageSize); // Garante que não saia por baixo
+            // =================================================================
+            // FIM DA CORREÇÃO
+            // =================================================================
             
             img.style.left = `${finalLeft}px`;
             img.style.top = `${finalTop}px`;
@@ -126,16 +134,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     exportWithNumbersBtn.addEventListener('click', () => {
-        html2canvas(captureArea).then(canvas => {
-            triggerDownload(canvas, 'com_numeros.png');
-        });
+        html2canvas(captureArea).then(canvas => triggerDownload(canvas, 'layout_com_numeros.png'));
     });
 
     exportWithoutNumbersBtn.addEventListener('click', () => {
-        inputContainers.forEach(container => container.style.visibility = 'hidden');
+        inputContainers.forEach(c => c.style.visibility = 'hidden');
         html2canvas(captureArea).then(canvas => {
-            inputContainers.forEach(container => container.style.visibility = 'visible');
-            triggerDownload(canvas, 'so_imagens.png');
+            inputContainers.forEach(c => c.style.visibility = 'visible');
+            triggerDownload(canvas, 'layout_so_imagens.png');
         });
     });
 
@@ -145,34 +151,66 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Por favor, insira um número válido de páginas.");
             return;
         }
+
         generatePdfBtn.disabled = true;
         generatePdfBtn.textContent = 'Gerando...';
         progressIndicator.style.display = 'block';
         progressBar.style.width = '0%';
-        const pdf = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+        batchResultsArea.style.display = 'none';
+        batchResultsList.innerHTML = '';
+
+        let pdf = null;
+        const CHUNK_SIZE = 10;
+
         for (let i = 0; i < totalPages; i++) {
+            if (i % CHUNK_SIZE === 0) {
+                pdf = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+            }
+
+            const pageNumberInChunk = i % CHUNK_SIZE;
             const leftCount = i * 2 + 1;
             const rightCount = i * 2 + 2;
-            progressText.textContent = `Gerando página ${i + 1} de ${totalPages} (E:${leftCount}, D:${rightCount})...`;
+
+            progressText.textContent = `Gerando página ${i + 1} de ${totalPages}...`;
             progressBar.style.width = `${((i + 1) / totalPages) * 100}%`;
+
             leftInput.value = leftCount;
             rightInput.value = rightCount;
             updateDisplay();
             await new Promise(resolve => setTimeout(resolve, 100));
+
             inputContainers.forEach(c => c.style.visibility = 'hidden');
             const canvas = await html2canvas(captureArea);
             inputContainers.forEach(c => c.style.visibility = 'visible');
             const imgData = canvas.toDataURL('image/png');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
-            if (i > 0) {
+            
+            if (pageNumberInChunk > 0) {
                 pdf.addPage();
             }
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+            if ((i + 1) % CHUNK_SIZE === 0 || (i + 1) === totalPages) {
+                const startPage = i - pageNumberInChunk + 1;
+                const endPage = i + 1;
+                const pdfBlob = pdf.output('blob');
+                const blobUrl = URL.createObjectURL(pdfBlob);
+
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.textContent = `Baixar PDF (Páginas ${startPage}-${endPage})`;
+                link.download = `lote_paginas_${startPage}-${endPage}.pdf`;
+                
+                listItem.appendChild(link);
+                batchResultsList.appendChild(listItem);
+            }
         }
-        pdf.save(`lote_${totalPages}_paginas.pdf`);
+
+        progressText.textContent = 'Geração concluída!';
+        batchResultsArea.style.display = 'block';
         generatePdfBtn.disabled = false;
-        generatePdfBtn.textContent = 'Gerar PDF em Lote';
-        progressIndicator.style.display = 'none';
+        generatePdfBtn.textContent = 'Gerar Arquivos em Lote';
     });
 });
