@@ -20,22 +20,29 @@
 
     <div id="main-app-wrapper" style="display: none;">
         <div id="automation-section">
+            <h2>Geração em Lote para PDF</h2>
+            <p>Gere múltiplas páginas em arquivos PDF fracionados de 10 em 10.</p>
             <div class="automation-controls">
                 <label for="pages-to-generate">Número de páginas:</label>
-                <input type="number" id="pages-to-generate" value="3" min="1" max="500">
+                <input type="number" id="pages-to-generate" value="25" min="1" max="1000">
                 
                 <div class="toggle-container">
                     <input type="checkbox" id="random-layout-toggle">
-                    <label for="random-layout-toggle">Ativar Modo Aleatório</label>
+                    <label for="random-layout-toggle">Ativar Layout Aleatório</label>
                 </div>
 
-                <button id="generate-pdf-btn" class="export-btn btn-danger">Gerar PDF em Lote</button>
+                <button id="generate-pdf-btn" class="export-btn btn-danger">Gerar Arquivos em Lote</button>
             </div>
             <div id="progress-indicator" style="display: none;">
-                <p id="progress-text">Gerando páginas...</p>
+                <p id="progress-text">Gerando...</p>
                 <div class="progress-bar-container">
                     <div id="progress-bar" style="width: 0%;"></div>
                 </div>
+            </div>
+            <!-- NOVA ÁREA PARA EXIBIR OS LINKS DE DOWNLOAD -->
+            <div id="batch-results-area" style="display: none;">
+                <h3>Arquivos Prontos para Download:</h3>
+                <ul id="batch-results-list"></ul>
             </div>
         </div>
 
@@ -46,11 +53,11 @@
 
         <div class="container" id="capture-area">
             <div class="split left">
-                <div class="input-container"><label>Esquerda:</label><input type="number" id="left-input" value="6"></div>
+                <div class="input-container"><label>Esquerda:</label><input type="number" id="left-input" value="1"></div>
                 <div id="left-images" class="image-area"></div>
             </div>
             <div class="split right">
-                <div class="input-container"><label>Direita:</label><input type="number" id="right-input" value="9"></div>
+                <div class="input-container"><label>Direita:</label><input type="number" id="right-input" value="7"></div>
                 <div id="right-images" class="image-area"></div>
             </div>
         </div>
